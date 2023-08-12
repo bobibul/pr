@@ -82,8 +82,9 @@ class MyHome extends StatelessWidget {
                   )
                 ],
               ),
+
               SizedBox(
-                height: 120,
+                height: 80,
               ),
 
               Row(
@@ -101,12 +102,14 @@ class MyHome extends StatelessWidget {
                   ),
                   FloatingActionButton(onPressed: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => SecondPage()));
+                        context,
+                        MaterialPageRoute(builder: (context) => CameraApp()));
                   },
                     backgroundColor: Colors.black,
-                    child: Icon(Icons.camera_alt,size: 30),)
+                    child: Icon(Icons.camera_alt, size: 30),)
                 ],
-              )
+              ),
+
             ],
           )),
     );
