@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/second_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MyHome extends StatelessWidget {
+
+
   const MyHome({super.key});
+
+  Future<void> requestCameraPermission() async{
+
+    final serviceStatusLocation = await Permission.locationWhenInUse.isGranted ;
+
+    bool isLocation = serviceStatusLocation == ServiceStatus.enabled;
+
+    final status = await Permission.locationWhenInUse.request();
+
+    if (status == PermissionStatus.granted) {
+      print('Permission Granted');
+    } else if (status == PermissionStatus.denied) {
+      print('Permission denied');
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      print('Permission Permanently Denied');
+      await openAppSettings();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    requestCameraPermission();
     return Scaffold(
       backgroundColor: Colors.amber[800],
       body: Padding(
@@ -113,5 +135,12 @@ class MyHome extends StatelessWidget {
             ],
           )),
     );
+
+
+
+
   }
+
+
+
 }
