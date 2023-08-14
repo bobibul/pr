@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 
 class CameraApp extends StatefulWidget {
@@ -28,7 +30,20 @@ class _CameraAppState extends State<CameraApp> {
               alignment: Alignment.center,
               children: [
                 CameraPreview(controller),
-                Image.asset('assets/camera-overlay-conceptcoder.png')
+                Image.asset('assets/camera-overlay-conceptcoder.png'),
+                Column(
+                  children: [
+                    SizedBox(height: 600,),
+                    InkWell(
+                      onTap: () => onTakePicture(),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.orange,
+                        radius: 30.0
+                      ),
+                    ),
+
+                  ],
+                )
               ],
             );
           }else{
@@ -50,6 +65,43 @@ class _CameraAppState extends State<CameraApp> {
       imageFormatGroup: ImageFormatGroup.yuv420
     );
     await controller.initialize();
+  }
+
+  void onTakePicture() async{
+    await controller.takePicture().then((XFile xfile) {
+      if (mounted){
+        if(xfile != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('ㅎㅇ'),
+              content: Column(
+                children: [
+                  SizedBox(
+                    width: 300,
+                    height: 300,
+                    child:
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: Image.file(
+                              File(xfile.path)
+                            ).image,
+                          ),
+                          Icon(Icons.check)
+
+                      ],
+                    ),
+                  ),
+                ],
+
+              )
+            )
+            );
+        }
+        return;
+      }
+    });
   }
 }
 
