@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-
+import 'package:untitled/preview_screen.dart';
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -15,43 +15,55 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   late CameraController controller;
+  late Future<void> _initializeControllerFuture;
+  late String _imagePath;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.amber[800],
+        leadingWidth: 0.0,
         title: SizedBox(height: 30,),
       ),
       body: FutureBuilder(
-        future: initializationCamera(),
-        builder: (context, snapshot){
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                CameraPreview(controller),
-                Image.asset('assets/camera-overlay-conceptcoder.png'),
-                Column(
-                  children: [
-                    SizedBox(height: 600,),
-                    InkWell(
-                      onTap: () => onTakePicture(),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.orange,
-                        radius: 30.0
-                      ),
-                    ),
+          future: initializationCamera(),
+          builder: (context, snapshot){
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  CameraPreview(controller),
+                  Image.asset('assets/camera-overlay-conceptcoder.png'),
+                  Column(
+                    children: [
+                      SizedBox(height: 600,),
+                      FloatingActionButton(
+                        onPressed: () async{
+                          final XFile xfile = await onTakePicture();
+                          if(!mounted) return;
+                          Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => ImagePreview(xfile: xfile,))
+                          );
+                        },
+                        backgroundColor: Colors.amber[800],
+                        child: Icon(
+                          Icons.camera,
+                          size: 30,
+                          color: Colors.black,
+                        ),
+                      )
 
-                  ],
-                )
-              ],
-            );
-          }else{
-            return Center(
-                child: CircularProgressIndicator()
-            );
+                    ],
+                  )
+                ],
+              );
+            }else{
+              return Center(
+                  child: CircularProgressIndicator()
+              );
+            }
           }
-        }
       ),
 
     );
@@ -60,49 +72,26 @@ class _CameraAppState extends State<CameraApp> {
   Future<void> initializationCamera() async{
     var cameras = await availableCameras();
     controller = CameraController(
-      cameras[EnumCameraDescripion.back.index],
-      ResolutionPreset.medium,
-      imageFormatGroup: ImageFormatGroup.yuv420
+        cameras[EnumCameraDescripion.back.index],
+        ResolutionPreset.medium,
+        imageFormatGroup: ImageFormatGroup.yuv420
     );
     await controller.initialize();
   }
 
-  void onTakePicture() async{
-    await controller.takePicture().then((XFile xfile) {
-      if (mounted){
-        if(xfile != null) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text('ㅎㅇ'),
-              content: Column(
-                children: [
-                  SizedBox(
-                    width: 300,
-                    height: 300,
-                    child:
-                      Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: Image.file(
-                              File(xfile.path)
-                            ).image,
-                          ),
-                          Icon(Icons.check)
+  Future<XFile> onTakePicture() async{
+    controller.setFocusMode(FocusMode.locked);
+    controller.setExposureMode(ExposureMode.locked);
+    final XFile xfile = await controller.takePicture();
+    controller.setFocusMode(FocusMode.auto);
+    controller.setExposureMode(ExposureMode.auto);
 
-                      ],
-                    ),
-                  ),
-                ],
-
-              )
-            )
-            );
-        }
-        return;
-      }
-    });
+    return xfile;
   }
+  
+  
 }
+
+
 
 enum EnumCameraDescripion {front, back}
