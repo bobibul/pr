@@ -8,6 +8,8 @@ class ImagePreview extends StatelessWidget {
   final XFile xfile;
   const ImagePreview({required this.xfile,super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,3 +55,15 @@ class ImagePreview extends StatelessWidget {
     );
   }
 }
+
+class TotalImage extends StatelessWidget {
+
+  final XFile xfile;
+  const TotalImage({required this.xfile,super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
