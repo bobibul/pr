@@ -45,9 +45,13 @@ class _CroppingimageState extends State<Croppingimage> {
     return Scaffold(
       body: Center(
         child: Stack(
-          alignment: Alignment(0,-1),
           children: [
-            Image.file(File(widget.xfile.path)),
+            Column(
+              children: [
+                SizedBox(height: 60,),
+                Image.file(File(widget.xfile.path)),
+              ],
+            ),
             Positioned(
                 left: _position1.dx,
                 top: _position1.dy,
