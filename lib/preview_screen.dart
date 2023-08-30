@@ -17,7 +17,20 @@ class ImagePreview extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Image.file(File(xfile.path)),
+            SizedBox(height: 300,),
+            ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: 0.4, // 아래쪽 부분을 자름
+                child: ClipRect(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    heightFactor: 0.8, // 위쪽 부분을 자름
+                    child: Image.file(File(xfile.path)), // 이미지 경로 수정
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: 30,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -26,11 +39,11 @@ class ImagePreview extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  backgroundColor: Colors.amber[800],
+                  backgroundColor: Colors.white,
                   child: Icon(
                     Icons.keyboard_return,
                     size: 30,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
                 SizedBox(width: 10,),
@@ -40,11 +53,11 @@ class ImagePreview extends StatelessWidget {
                         context, MaterialPageRoute(builder: (context) => Croppingimage(xfile: xfile,))
                     );
                   },
-                  backgroundColor: Colors.amber[800],
+                  backgroundColor: Colors.white,
                   child: Icon(
                     Icons.check,
                     size: 30,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -56,14 +69,4 @@ class ImagePreview extends StatelessWidget {
   }
 }
 
-class TotalImage extends StatelessWidget {
-
-  final XFile xfile;
-  const TotalImage({required this.xfile,super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
 

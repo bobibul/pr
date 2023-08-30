@@ -28,7 +28,7 @@ class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     requestCameraPermission();
-    return Scaffold(
+     return Scaffold(
       backgroundColor: Colors.amber[800],
       body: Padding(
           padding: EdgeInsets.fromLTRB(30.0, 70.0, 30.0, 0.0),

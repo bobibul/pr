@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:untitled/analyse_image.dart';
+
 
 class Croppingimage extends StatefulWidget {
 
@@ -15,10 +15,12 @@ class Croppingimage extends StatefulWidget {
   State<Croppingimage> createState() => _CroppingimageState();
 }
 
-class _CroppingimageState extends State<Croppingimage> {
+class _CroppingimageState extends State<Croppingimage>{
 
   Offset _position1 = Offset(120,750);
   Offset _position2 = Offset(240,750);
+
+
 
 
   void _updatePosition1(Offset newPosition){
@@ -34,12 +36,6 @@ class _CroppingimageState extends State<Croppingimage> {
   }
 
 
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +44,20 @@ class _CroppingimageState extends State<Croppingimage> {
           children: [
             Column(
               children: [
-                SizedBox(height: 60,),
-                Image.file(File(widget.xfile.path)),
+                SizedBox(height: 300,),
+                ClipRect(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    heightFactor: 0.4, // 아래쪽 부분을 자름
+                    child: ClipRect(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        heightFactor: 0.8, // 위쪽 부분을 자름
+                        child: Image.file(File(widget.xfile.path)), // 이미지 경로 수정
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             Positioned(
@@ -85,10 +93,8 @@ class _CroppingimageState extends State<Croppingimage> {
                         context, MaterialPageRoute(builder: (context) =>
                         AnalyseImage(
                           xfile: widget.xfile,
-                          offsetx1: _position1.dx,
-                          offsetx2: _position2.dx,
-                          offsety1: _position1.dy,
-                          offsety2: _position2.dy,
+                          position1: _position1,
+                          position2: _position2,
                         ))
                     );
                   } : null,
@@ -115,6 +121,7 @@ class _CroppingimageState extends State<Croppingimage> {
 
 
 }
+
 
 class DraggableBox extends StatefulWidget {
   final void Function(Offset) updatePosition;
@@ -174,4 +181,19 @@ class _DraggableBoxState2 extends State<DraggableBox2> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

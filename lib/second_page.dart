@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -14,9 +13,6 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   late CameraController controller;
-  late Future<void> _initializeControllerFuture;
-  late String _imagePath;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +29,7 @@ class _CameraAppState extends State<CameraApp> {
                 alignment: Alignment.center,
                 children: [
                   CameraPreview(controller),
-                  Image.asset('assets/camera-overlay-conceptcoder.png'),
+                  Image.asset('assets/teeth_overlay_2.png'),
                   Column(
                     children: [
                       SizedBox(height: 600,),
@@ -41,9 +37,7 @@ class _CameraAppState extends State<CameraApp> {
                         onPressed: () async{
                           final XFile xfile = await onTakePicture();
                           if(!mounted) return;
-                          Navigator.push(
-                            context, MaterialPageRoute(builder: (context) => ImagePreview(xfile: xfile,))
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(xfile: xfile,)));
                         },
                         backgroundColor: Colors.amber[800],
                         child: Icon(
