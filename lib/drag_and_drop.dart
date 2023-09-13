@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:untitled/analyse_image.dart';
 
 
@@ -19,6 +20,8 @@ class _CroppingimageState extends State<Croppingimage>{
 
   Offset _position1 = Offset(120,750);
   Offset _position2 = Offset(240,750);
+  GlobalKey imageKey = GlobalKey();
+  double circleRadius = 20.0;
 
 
 
@@ -45,15 +48,18 @@ class _CroppingimageState extends State<Croppingimage>{
             Column(
               children: [
                 SizedBox(height: 300,),
-                ClipRect(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    heightFactor: 0.4, // 아래쪽 부분을 자름
-                    child: ClipRect(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        heightFactor: 0.8, // 위쪽 부분을 자름
-                        child: Image.file(File(widget.xfile.path)), // 이미지 경로 수정
+                RepaintBoundary(
+                  key: imageKey,
+                  child: ClipRect(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      heightFactor: 0.4, // 아래쪽 부분을 자름
+                      child: ClipRect(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          heightFactor: 0.8, // 위쪽 부분을 자름
+                          child: Image.file(File(widget.xfile.path)), // 이미지 경로 수정
+                        ),
                       ),
                     ),
                   ),
@@ -89,6 +95,7 @@ class _CroppingimageState extends State<Croppingimage>{
                 top: 750,
                 child:FloatingActionButton(
                   onPressed: _position2.dy <= 500 && _position1.dy <= 500? () {
+                    cropImage();
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) =>
                         AnalyseImage(
@@ -118,6 +125,13 @@ class _CroppingimageState extends State<Croppingimage>{
 
     );
   }
+  void cropImage() async{
+    RenderRepaintBoundary boundary =
+        imageKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+
+
+  }
+
 
 
 }
@@ -147,6 +161,7 @@ class _DraggableBoxState extends State<DraggableBox> {
       child: CircleAvatar(
         backgroundImage: AssetImage('assets/circle-outline.png'),
         backgroundColor: Colors.transparent,
+        radius: 20,
       ),
     );
   }
@@ -176,14 +191,14 @@ class _DraggableBoxState2 extends State<DraggableBox2> {
       child: CircleAvatar(
         backgroundImage: AssetImage('assets/circle-outline.png'),
         backgroundColor: Colors.transparent,
-        child: Text('$_offset',style: TextStyle(fontSize: 10,color: Colors.black),),
       ),
     );
   }
+
+
+
+
 }
-
-
-
 
 
 

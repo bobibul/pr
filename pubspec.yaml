@@ -42,6 +42,7 @@ dependencies:
   provider: ^6.0.5
   image_to_byte: ^1.0.0
   image: ^4.0.17
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -67,5 +68,12 @@ flutter:
 
   assets:
      - assets/
+  fonts:
+    - family: 채경폰트
+      fonts:
+        - asset: fonts/establish Retrosans.ttf
+    - family: 진혁폰트
+      fonts:
+        - asset: fonts/SB 어그로 M.ttf
 
   # see https://flutter.dev/custom-fonts/#from-packages

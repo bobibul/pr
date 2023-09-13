@@ -48,6 +48,9 @@ class _AnalyseImageState extends State<AnalyseImage> {
     print(image?.width);
     print(image?.height);
     print(data.length);
+    print('qqqqqqqqq');
+    print(widget.position1);
+    print(widget.position1.dx);
 
   }
 

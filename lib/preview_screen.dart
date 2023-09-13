@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/crop_image.dart';
+import 'package:untitled/drag_and_drop.dart';
 
 class ImagePreview extends StatelessWidget {
 
