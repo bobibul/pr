@@ -1,7 +1,28 @@
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:untitled/preview_screen.dart';
+import 'package:image/image.dart' as img;
+
+
+Future<XFile> saveImageToXFile(img.Image image) async {
+  // Convert img.Image to Uint8List
+  Uint8List pngBytes = img.encodePng(image);
+
+  // Get the directory for saving the image
+  final directory = await getTemporaryDirectory();
+  String filePath = '${directory.path}/image.png';
+
+  // Save the image to a file
+  File imageFile = File(filePath);
+  await imageFile.writeAsBytes(pngBytes);
+
+  // Return as XFile
+  return XFile(filePath);
+}
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -13,7 +34,7 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   late CameraController controller;
-  int _currentCameraIndex = 0;
+  int _currentCameraIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +52,12 @@ class _CameraAppState extends State<CameraApp> {
                 alignment: Alignment.center,
                 children: [
                   CameraPreview(controller),
-                  Image.asset('assets/teeth_overlay_2.png'),
+                  Image.asset('assets/overlay_cc2.png'),
                   Column(
                     children: [
                       SizedBox(height: 600,),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FloatingActionButton(
                             onPressed: _toggleCamera,
@@ -49,8 +71,16 @@ class _CameraAppState extends State<CameraApp> {
                           FloatingActionButton(
                             onPressed: () async{
                               final XFile xfile = await onTakePicture();
+                              img.Image croppedImage;
+                              if (_currentCameraIndex == 1){
+                                croppedImage = await getfrontImagesize(xfile);
+                              }
+                              else{
+                                croppedImage = await getbackImagesize(xfile);
+                              }
+                              final XFile rexfile = await saveImageToXFile(croppedImage);
                               if(!mounted) return;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(xfile: xfile,)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(croppedImage: croppedImage,xFile: rexfile,)));
                             },
                             backgroundColor: Colors.white,
                             child: Icon(
@@ -81,7 +111,7 @@ class _CameraAppState extends State<CameraApp> {
     var cameras = await availableCameras();
     controller = CameraController(
         cameras[_currentCameraIndex],
-        ResolutionPreset.medium,
+        ResolutionPreset.max,
         imageFormatGroup: ImageFormatGroup.yuv420
     );
     await controller.initialize();
@@ -96,6 +126,29 @@ class _CameraAppState extends State<CameraApp> {
 
     return xfile;
   }
+
+  Future<img.Image> getfrontImagesize(XFile xfile) async{
+    String imagePath = xfile.path;
+    final bytes = await File(imagePath).readAsBytes();
+    final img.Image? decodedImage = img.decodeImage(bytes);
+    print(decodedImage!.width);
+    print(decodedImage!.height);
+    img.Image croppedImage = img.copyCrop(decodedImage!, x: 20, y: 530, width: decodedImage!.width - 40, height: 450);
+    Image croppedFlutterImage = Image.memory(Uint8List.fromList(img.encodePng(croppedImage)));
+    return croppedImage;
+  }
+
+  Future<img.Image> getbackImagesize(XFile xfile) async{
+    String imagePath = xfile.path;
+    final bytes = await File(imagePath).readAsBytes();
+    final img.Image? decodedImage = img.decodeImage(bytes);
+    print(decodedImage!.width);
+    print(decodedImage!.height);
+    img.Image croppedImage = img.copyCrop(decodedImage!, x: 20, y: 1000, width: decodedImage!.width - 40, height: 1000);
+    Image croppedFlutterImage = Image.memory(Uint8List.fromList(img.encodePng(croppedImage)));
+    return croppedImage;
+  }
+
 
   void _toggleCamera(){
     setState(() {

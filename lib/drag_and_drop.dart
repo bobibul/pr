@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:untitled/analyse_image.dart';
 
-
 class Croppingimage extends StatefulWidget {
 
   final XFile xfile;
@@ -48,20 +47,11 @@ class _CroppingimageState extends State<Croppingimage>{
             Column(
               children: [
                 SizedBox(height: 300,),
-                RepaintBoundary(
-                  key: imageKey,
-                  child: ClipRect(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      heightFactor: 0.4, // 아래쪽 부분을 자름
-                      child: ClipRect(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          heightFactor: 0.8, // 위쪽 부분을 자름
-                          child: Image.file(File(widget.xfile.path)), // 이미지 경로 수정
-                        ),
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RepaintBoundary(
+                    key: imageKey,
+                    child: Image.file(File(widget.xfile.path)),
                   ),
                 ),
               ],
