@@ -36,6 +36,7 @@ class _CameraAppState extends State<CameraApp> {
   late CameraController controller;
   int _currentCameraIndex = 1;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,17 +71,9 @@ class _CameraAppState extends State<CameraApp> {
                           ),
                           FloatingActionButton(
                             onPressed: () async{
-                              final XFile xfile = await onTakePicture();
-                              img.Image croppedImage;
-                              if (_currentCameraIndex == 1){
-                                croppedImage = await getfrontImagesize(xfile);
-                              }
-                              else{
-                                croppedImage = await getbackImagesize(xfile);
-                              }
-                              final XFile rexfile = await saveImageToXFile(croppedImage);
+                              XFile xfile = await getCroppedImage();
                               if(!mounted) return;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(croppedImage: croppedImage,xFile: rexfile,)));
+                              String result = await Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(xFile: xfile,)));
                             },
                             backgroundColor: Colors.white,
                             child: Icon(
@@ -120,35 +113,26 @@ class _CameraAppState extends State<CameraApp> {
   Future<XFile> onTakePicture() async{
     controller.setFocusMode(FocusMode.locked);
     controller.setExposureMode(ExposureMode.locked);
-    final XFile xfile = await controller.takePicture();
+    XFile xfile = await controller.takePicture();
     controller.setFocusMode(FocusMode.auto);
     controller.setExposureMode(ExposureMode.auto);
 
     return xfile;
   }
 
-  Future<img.Image> getfrontImagesize(XFile xfile) async{
+  Future<img.Image> getImagesize(XFile xfile) async{
     String imagePath = xfile.path;
-    final bytes = await File(imagePath).readAsBytes();
-    final img.Image? decodedImage = img.decodeImage(bytes);
-    print(decodedImage!.width);
-    print(decodedImage!.height);
-    img.Image croppedImage = img.copyCrop(decodedImage!, x: 20, y: 530, width: decodedImage!.width - 40, height: 450);
-    Image croppedFlutterImage = Image.memory(Uint8List.fromList(img.encodePng(croppedImage)));
+    img.Image croppedImage;
+    Uint8List bytes = await File(imagePath).readAsBytes();
+    img.Image? decodedImage = img.decodeImage(bytes);
+    if(_currentCameraIndex == 1){
+      croppedImage = img.copyCrop(decodedImage!, x: 20, y: 530, width: decodedImage.width - 40, height: 450);
+    }
+    else{
+      croppedImage = img.copyCrop(decodedImage!, x: 20, y: 1000, width: decodedImage.width - 40, height: 1000);
+    }
     return croppedImage;
   }
-
-  Future<img.Image> getbackImagesize(XFile xfile) async{
-    String imagePath = xfile.path;
-    final bytes = await File(imagePath).readAsBytes();
-    final img.Image? decodedImage = img.decodeImage(bytes);
-    print(decodedImage!.width);
-    print(decodedImage!.height);
-    img.Image croppedImage = img.copyCrop(decodedImage!, x: 20, y: 1000, width: decodedImage!.width - 40, height: 1000);
-    Image croppedFlutterImage = Image.memory(Uint8List.fromList(img.encodePng(croppedImage)));
-    return croppedImage;
-  }
-
 
   void _toggleCamera(){
     setState(() {
@@ -159,6 +143,15 @@ class _CameraAppState extends State<CameraApp> {
         _currentCameraIndex = 0;
       }
     });
+  }
+
+  Future<XFile> getCroppedImage() async{
+    img.Image croppedImage;
+    XFile xfile = await onTakePicture();
+    croppedImage = await getImagesize(xfile);
+    XFile rexfile = await saveImageToXFile(croppedImage);
+
+    return rexfile;
   }
   
   
