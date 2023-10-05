@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:untitled/preview_screen.dart';
 import 'package:image/image.dart' as img;
 
+int a = 0;
 
 Future<XFile> saveImageToXFile(img.Image image) async {
   // Convert img.Image to Uint8List
@@ -14,11 +15,14 @@ Future<XFile> saveImageToXFile(img.Image image) async {
 
   // Get the directory for saving the image
   final directory = await getTemporaryDirectory();
-  String filePath = '${directory.path}/image.png';
+  print(directory);
+  String filePath = '${directory.path}/${a}image.png';
 
   // Save the image to a file
   File imageFile = File(filePath);
   await imageFile.writeAsBytes(pngBytes);
+
+  a += 1;
 
   // Return as XFile
   return XFile(filePath);

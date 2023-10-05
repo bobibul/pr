@@ -69,15 +69,15 @@ class _CroppingimageState extends State<Croppingimage>{
                     updatePosition: _updatePosition2
                 )),
             Positioned(
-                left: _position1.dx + 6,
-                top: _position1.dy + 40,
-                child: Text('샘플',)
+                left: _position1.dx + 7,
+                top: _position1.dy + 60,
+                child: Text('샘플',style: TextStyle(fontSize: 20),)
             ),
 
             Positioned(
-                left: _position2.dx + 6,
-                top: _position2.dy + 40,
-                child: Text('치아')
+                left: _position2.dx + 7,
+                top: _position2.dy + 60,
+                child: Text('치아',style: TextStyle(fontSize: 20),)
             ),
             
             Positioned(
@@ -151,7 +151,7 @@ class _DraggableBoxState extends State<DraggableBox> {
       child: CircleAvatar(
         backgroundImage: AssetImage('assets/circle-outline.png'),
         backgroundColor: Colors.transparent,
-        radius: 20,
+        radius: 30,
       ),
     );
   }
@@ -175,12 +175,14 @@ class _DraggableBoxState2 extends State<DraggableBox2> {
       onPanUpdate: (details) {
         setState(() {
           _offset += details.delta;
+          details.lo
         });
         widget.updatePosition(_offset);
       },
       child: CircleAvatar(
         backgroundImage: AssetImage('assets/circle-outline.png'),
         backgroundColor: Colors.transparent,
+        radius: 30,
       ),
     );
   }
