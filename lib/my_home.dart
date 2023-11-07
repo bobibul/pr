@@ -9,18 +9,11 @@ class MyHome extends StatelessWidget {
 
   Future<void> requestCameraPermission() async{
 
-    final serviceStatusLocation = await Permission.locationWhenInUse.isGranted ;
-
-    bool isLocation = serviceStatusLocation == ServiceStatus.enabled;
-
     final status = await Permission.locationWhenInUse.request();
 
     if (status == PermissionStatus.granted) {
-      print('Permission Granted');
     } else if (status == PermissionStatus.denied) {
-      print('Permission denied');
     } else if (status == PermissionStatus.permanentlyDenied) {
-      print('Permission Permanently Denied');
       await openAppSettings();
     }
   }

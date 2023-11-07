@@ -15,7 +15,7 @@ Future<XFile> saveImageToXFile(img.Image image) async {
 
   // Get the directory for saving the image
   final directory = await getTemporaryDirectory();
-  print(directory);
+
   String filePath = '${directory.path}/${a}image.png';
 
   // Save the image to a file
@@ -36,9 +36,14 @@ class CameraApp extends StatefulWidget {
   State<CameraApp> createState() => _CameraAppState();
 }
 
+double _minAvailableExposureOffset = -2.0;
+double _maxAvailableExposureOffset = 2.0;
+double _currentExposureOffset = 0.0;
+
 class _CameraAppState extends State<CameraApp> {
+
   late CameraController controller;
-  int _currentCameraIndex = 1;
+  int _currentCameraIndex = 0;
 
 
   @override
@@ -64,20 +69,41 @@ class _CameraAppState extends State<CameraApp> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FloatingActionButton(
-                            onPressed: _toggleCamera,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.cameraswitch,
-                              size: 40,
-                              color: Colors.black,
-                            ),
-                          ),
+                          // FloatingActionButton(
+                          //   onPressed: _toggleCamera,
+                          //   backgroundColor: Colors.white,
+                          //   child: Icon(
+                          //     Icons.cameraswitch,
+                          //     size: 40,
+                          //     color: Colors.black,
+                          //   ),
+                          // ),
                           FloatingActionButton(
                             onPressed: () async{
+                              showDialog(context: context, builder: (context){
+                                return Column(
+                                  children: [
+                                    SizedBox(height: 400,),
+                                    Center(child: CircularProgressIndicator()),
+                                    SizedBox(height: 100,),
+                                    Text(
+                                      '카메라를 고정한 상태로 기다려주세요',
+                                      style: TextStyle(
+                                          fontFamily: '진혁폰트',
+                                          fontSize: 20.0,
+                                          letterSpacing: 1.0,
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.red
+                                      ),
+                                    )
+                                  ],
+                                );
+                                }
+                              );
                               XFile xfile = await getCroppedImage();
+                              Navigator.of(context).pop();
                               if(!mounted) return;
-                              String result = await Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(xFile: xfile,)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePreview(xFile: xfile,)));
                             },
                             backgroundColor: Colors.white,
                             child: Icon(
@@ -90,7 +116,8 @@ class _CameraAppState extends State<CameraApp> {
                       )
 
                     ],
-                  )
+                  ),
+
                 ],
               );
             }else{
@@ -109,9 +136,11 @@ class _CameraAppState extends State<CameraApp> {
     controller = CameraController(
         cameras[_currentCameraIndex],
         ResolutionPreset.max,
-        imageFormatGroup: ImageFormatGroup.yuv420
+        imageFormatGroup: ImageFormatGroup.yuv420,
     );
+
     await controller.initialize();
+    await controller.setExposureOffset(-1.0);
   }
 
   Future<XFile> onTakePicture() async{
@@ -138,16 +167,16 @@ class _CameraAppState extends State<CameraApp> {
     return croppedImage;
   }
 
-  void _toggleCamera(){
-    setState(() {
-      if(_currentCameraIndex == 0){
-        _currentCameraIndex = 1;
-      }
-      else{
-        _currentCameraIndex = 0;
-      }
-    });
-  }
+  // void _toggleCamera(){
+  //   setState(() {
+  //     if(_currentCameraIndex == 0){
+  //       _currentCameraIndex = 1;
+  //     }
+  //     else{
+  //       _currentCameraIndex = 0;
+  //     }
+  //   });
+  // }
 
   Future<XFile> getCroppedImage() async{
     img.Image croppedImage;
