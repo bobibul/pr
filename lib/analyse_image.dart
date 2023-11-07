@@ -1,11 +1,15 @@
 
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
 class ShowDesult extends StatefulWidget {
 
   final String string;
-  ShowDesult({super.key,  required this.string});
+  final String keyname;
+  final XFile xfile2;
+  ShowDesult({super.key,  required this.string, required this.keyname, required this.xfile2});
 
 
   @override
@@ -51,7 +55,7 @@ class _ShowDesultState extends State<ShowDesult> {
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  '당신의 치아 색은...',
+                  '당신의 치아 색은',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black,
                       letterSpacing: 2.0,
@@ -88,6 +92,24 @@ class _ShowDesultState extends State<ShowDesult> {
                       fontSize: 35.0,
                       fontWeight: FontWeight.bold),
                 ),
+              ),
+              Column(
+                children: [
+                  Center(
+                    child: CircleAvatar(
+                        backgroundImage:
+                        AssetImage('assets/${widget.keyname}/${widget.string}'),
+                        radius: 30.0,
+                        backgroundColor: Colors.white),
+                  ),
+                  Center(
+                    child: CircleAvatar(
+                        backgroundImage: FileImage(File(widget.xfile2.path)),
+                        radius: 30.0,
+                        backgroundColor: Colors.white
+                    ),
+                  ),
+                ],
               ),
             ],
           )),

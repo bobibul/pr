@@ -10,7 +10,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'analyse_image.dart';
 
-
+int pixel = 150;
 
 
 double calculatePSNR(img.Image? image1, img.Image? image2) {
@@ -24,12 +24,12 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
   HsvColor hsvColor2 = rgbColor2.toHsvColor();
 
 
-  for (int y = 0; y < 150; y++) {
-    for (int x = 0; x < 150; x++) {
+  for (int y = 0; y < pixel; y++) {
+    for (int x = 0; x < pixel; x++) {
 
       // Convert RGB to HSV
-      rgbColor1 = RgbColor(decodedBytes1![x+150*y], decodedBytes1[x+1+150*y], decodedBytes1[x+2+150*y]);
-      rgbColor2 = RgbColor(decodedBytes2![x+150*y], decodedBytes2[x+1+150*y], decodedBytes2[x+2+150*y]);
+      rgbColor1 = RgbColor(decodedBytes1![x+pixel*y], decodedBytes1[x+1+pixel*y], decodedBytes1[x+2+pixel*y]);
+      rgbColor2 = RgbColor(decodedBytes2![x+pixel*y], decodedBytes2[x+1+pixel*y], decodedBytes2[x+2+pixel*y]);
 
       hsvColor1 = rgbColor1.toHsvColor();
       hsvColor2 = rgbColor2.toHsvColor();
@@ -41,9 +41,9 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
     }
   }
 
-  mseH /= 150*150;
-  mseS /= 150*150;
-  mseV /= 150*150;
+  mseH /= pixel*pixel;
+  mseS /= pixel*pixel;
+  mseV /= pixel*pixel;
 
   double mse = (mseH + mseS + mseV) / 3;
   double maxPixelValue = 255.0; // HSV values are in the range [0, 1]
@@ -52,6 +52,8 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
 
   return psnr;
 }
+
+
 class AnalyseImage extends StatefulWidget {
 
   final XFile xfile1;
@@ -134,10 +136,27 @@ class _AnalyseImageState extends State<AnalyseImage> {
               List<String> guidelineImage = await getAssetImagesInSample5m3Folder('assets/sample5m3/');
 
               print(guidelineImage);
+              double psnrValue;
 
               for (String name in guidelineImage) {
                 img.Image? image = await decodeAssetImage('assets/sample5m3/$name');
                 psnrMap[name] = calculatePSNR(guideimage, image);
+                
+                guideimage = img.copyRotate(guideimage!, angle: 90);
+                psnrValue = calculatePSNR(guideimage, image);
+                if (psnrValue > psnrMap[name]!){
+                  psnrMap[name] = psnrValue;
+                }
+                guideimage = img.copyRotate(guideimage, angle: 180);
+                psnrValue = calculatePSNR(guideimage, image);
+                if (psnrValue > psnrMap[name]!){
+                  psnrMap[name] = psnrValue;
+                }
+                guideimage = img.copyRotate(guideimage, angle: 270);
+                psnrValue = calculatePSNR(guideimage, image);
+                if (psnrValue > psnrMap[name]!){
+                  psnrMap[name] = psnrValue;
+                }
               }
               // 값을 기준으로 정렬된 Map 생성 (값과 키를 뒤집어 저장)
               SplayTreeMap<double, String> invertedMap = SplayTreeMap<double, String>.fromIterables(psnrMap.values, psnrMap.keys);
@@ -159,6 +178,26 @@ class _AnalyseImageState extends State<AnalyseImage> {
                 img.Image? image = await decodeAssetImage('assets/$keyName/$name');
                 psnrMap2[name] = calculatePSNR(teethimage, image);
                 print(psnrMap2[name]);
+
+                teethimage = img.copyRotate(teethimage!, angle: 90);
+                psnrValue = calculatePSNR(teethimage, image);
+                if (psnrValue > psnrMap2[name]!){
+                  psnrMap2[name] = psnrValue;
+                }
+
+                teethimage = img.copyRotate(teethimage, angle: 180);
+                psnrValue = calculatePSNR(teethimage, image);
+                if (psnrValue > psnrMap2[name]!){
+                  psnrMap2[name] = psnrValue;
+                }
+
+                teethimage = img.copyRotate(teethimage, angle: 270);
+                psnrValue = calculatePSNR(teethimage, image);
+                if (psnrValue > psnrMap2[name]!){
+                  psnrMap2[name] = psnrValue;
+                }
+
+
               }
 
               SplayTreeMap<double, String> invertedMap2 = SplayTreeMap<double, String>.fromIterables(psnrMap2.values, psnrMap2.keys);
@@ -167,13 +206,13 @@ class _AnalyseImageState extends State<AnalyseImage> {
               String answer = findMaxValueKey(psnrMap2);
 
               dotIndex = answer.lastIndexOf('.');
-              String realAnswer = answer.substring(0,dotIndex);
+              answer = answer.substring(0,dotIndex);
 
 
 
 
               if(!mounted) return;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ShowDesult(string: realAnswer,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ShowDesult(string: answer, keyname: keyName!, xfile2: widget.xfile2,)));
 
             },child: Icon(Icons.check),)
           ],
