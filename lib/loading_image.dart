@@ -36,14 +36,21 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
 
 
       mseH += pow((hsvColor1.h - hsvColor2.h).toDouble(), 2);
-      mseS += pow((hsvColor1.s - hsvColor2.s).toDouble(), 2);
+      mseS += 1.3*pow((hsvColor1.s - hsvColor2.s).toDouble(), 2);
       mseV += pow((hsvColor1.v - hsvColor2.v).toDouble(), 2);
     }
+
+
   }
 
   mseH /= pixel*pixel;
   mseS /= pixel*pixel;
   mseV /= pixel*pixel;
+
+  print("mseH = $mseH");
+  print("mseS = $mseS");
+  print("mseV = $mseV");
+
 
   double mse = (mseH + mseS + mseV) / 3;
   double maxPixelValue = 255.0; // HSV values are in the range [0, 1]
@@ -207,6 +214,8 @@ class _AnalyseImageState extends State<AnalyseImage> {
 
               dotIndex = answer.lastIndexOf('.');
               answer = answer.substring(0,dotIndex);
+
+              print("keyname = $keyName");
 
 
 
