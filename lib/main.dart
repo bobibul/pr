@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:untitled/my_home.dart';
 import 'package:go_router/go_router.dart';
 import 'package:untitled/login_page.dart';
+import 'package:untitled/splash.dart';
 
 
-void main() => runApp(MyApp());
+void main() => runApp(SplashScreen());
 
 
 class MyApp extends StatelessWidget {
