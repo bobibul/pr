@@ -36,7 +36,7 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
 
 
       mseH += pow((hsvColor1.h - hsvColor2.h).toDouble(), 2);
-      mseS += 1.3*pow((hsvColor1.s - hsvColor2.s).toDouble(), 2);
+      mseS += 1.05*pow((hsvColor1.s - hsvColor2.s).toDouble(), 2);
       mseV += pow((hsvColor1.v - hsvColor2.v).toDouble(), 2);
     }
 
@@ -46,10 +46,6 @@ double calculatePSNR(img.Image? image1, img.Image? image2) {
   mseH /= pixel*pixel;
   mseS /= pixel*pixel;
   mseV /= pixel*pixel;
-
-  print("mseH = $mseH");
-  print("mseS = $mseS");
-  print("mseV = $mseV");
 
 
   double mse = (mseH + mseS + mseV) / 3;
@@ -142,7 +138,6 @@ class _AnalyseImageState extends State<AnalyseImage> {
 
               List<String> guidelineImage = await getAssetImagesInSample5m3Folder('assets/sample5m3/');
 
-              print(guidelineImage);
               double psnrValue;
 
               for (String name in guidelineImage) {
@@ -174,17 +169,13 @@ class _AnalyseImageState extends State<AnalyseImage> {
               int? dotIndex = keyWithMaxValue?.lastIndexOf('.');
               String? keyName = keyWithMaxValue?.substring(0,dotIndex);
 
-              print(invertedMap);
-              print(keyWithMaxValue);
-
               List<String> detectImageList = await getAssetImagesInSample5m3Folder('assets/$keyName/');
 
-              print(detectImageList);
 
               for (String name in detectImageList) {
                 img.Image? image = await decodeAssetImage('assets/$keyName/$name');
                 psnrMap2[name] = calculatePSNR(teethimage, image);
-                print(psnrMap2[name]);
+
 
                 teethimage = img.copyRotate(teethimage!, angle: 90);
                 psnrValue = calculatePSNR(teethimage, image);
@@ -212,7 +203,9 @@ class _AnalyseImageState extends State<AnalyseImage> {
               // 가장 큰 값을 가진 키 가져오기
               String answer = findMaxValueKey(psnrMap2);
 
+
               dotIndex = answer.lastIndexOf('.');
+              print("maxvalue = ${psnrMap2[answer]}");
               answer = answer.substring(0,dotIndex);
 
               print("keyname = $keyName");

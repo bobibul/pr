@@ -45,6 +45,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   firebase_core: ^2.16.0
   color: ^3.0.0
+  firebase_auth: ^4.13.0
+  google_sign_in: ^6.1.6
 
 dev_dependencies:
   flutter_test:
@@ -71,11 +73,10 @@ flutter:
   assets:
      - assets/
      - assets/sample5m3/
-     - assets/ev_0/
      - assets/ev_-0.5/
-     - assets/ev_-1/
-     - assets/ev_-1.5/
      - assets/ev_-0.4/
+     - assets/ev_-0.51/
+     - assets/ev_-0.52/
   fonts:
     - family: 채경폰트
       fonts:

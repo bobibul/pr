@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/my_home.dart';
 import 'package:go_router/go_router.dart';
+import 'package:untitled/login_page.dart';
 
 
 void main() => runApp(MyApp());
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
           GoRoute(
             path: '/',
             name: 'home',
-            pageBuilder: (context, state) => NoTransitionPage(child: MyHome())
+            pageBuilder: (context, state) => NoTransitionPage(child: Login())
           )
         ]
       ),

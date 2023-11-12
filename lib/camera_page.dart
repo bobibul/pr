@@ -36,9 +36,6 @@ class CameraApp extends StatefulWidget {
   State<CameraApp> createState() => _CameraAppState();
 }
 
-double _minAvailableExposureOffset = -2.0;
-double _maxAvailableExposureOffset = 2.0;
-double _currentExposureOffset = 0.0;
 
 class _CameraAppState extends State<CameraApp> {
 
@@ -140,15 +137,15 @@ class _CameraAppState extends State<CameraApp> {
     );
 
     await controller.initialize();
-    await controller.setExposureOffset(-1.0);
+    await controller.setExposureOffset(-0.5);
   }
 
   Future<XFile> onTakePicture() async{
     controller.setFocusMode(FocusMode.locked);
-    controller.setExposureMode(ExposureMode.locked);
+    //controller.setExposureMode(ExposureMode.locked);
     XFile xfile = await controller.takePicture();
     controller.setFocusMode(FocusMode.auto);
-    controller.setExposureMode(ExposureMode.auto);
+    //controller.setExposureMode(ExposureMode.auto);
 
     return xfile;
   }

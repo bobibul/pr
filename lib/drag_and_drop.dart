@@ -65,7 +65,7 @@ class _CroppingimageState extends State<Croppingimage>{
 
 
     XFile croppedXfile;
-    croppedImage = img.copyCrop(decodedImage, x: localPositionx, y: localPositiony, width: 150, height: 150);
+    croppedImage = img.copyCrop(decodedImage, x: localPositionx + 10, y: localPositiony, width: 150, height: 150);
     croppedXfile = await saveImageToXFile(croppedImage);
     return croppedXfile;
   }

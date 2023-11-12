@@ -97,20 +97,16 @@ class _ShowDesultState extends State<ShowDesult> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: CircleAvatar(
-                        backgroundImage:
-                        AssetImage('assets/${widget.keyname}/${widget.string}.jpg'),
-                        radius: 50.0,
-                        backgroundColor: Colors.white),
-                  ),
+                  CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/${widget.keyname}/${widget.string}.jpg'),
+                      radius: 50.0,
+                      backgroundColor: Colors.white),
                   SizedBox(width: 30,),
-                  Center(
-                    child: CircleAvatar(
-                        backgroundImage: FileImage(File(widget.xfile2.path)),
-                        radius: 50.0,
-                        backgroundColor: Colors.white
-                    ),
+                  CircleAvatar(
+                      backgroundImage: FileImage(File(widget.xfile2.path)),
+                      radius: 50.0,
+                      backgroundColor: Colors.white
                   ),
                 ],
               ),
