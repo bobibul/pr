@@ -5,7 +5,7 @@ import 'package:untitled/login_page.dart';
 import 'package:untitled/splash.dart';
 
 
-void main() => runApp(SplashScreen());
+void main() => runApp(MyApp());
 
 
 class MyApp extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           GoRoute(
             path: '/',
             name: 'home',
-            pageBuilder: (context, state) => NoTransitionPage(child: Login())
+            pageBuilder: (context, state) => NoTransitionPage(child: MyHome())
           )
         ]
       ),
